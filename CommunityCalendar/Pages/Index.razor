@@ -19,7 +19,7 @@ Welcome to your new app.
     @foreach (DateTime day in Calendar.Calculate(ChosenMonth))
     {
         <div>
-            @day.ToString("D")
+            @day.Day.ToString()
         </div>
     }
 </div>
