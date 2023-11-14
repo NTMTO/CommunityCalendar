@@ -1,6 +1,5 @@
 ﻿@page "/"
 @using System.Collections.Generic;
-@using CommunityCalendar.Data;
 
 <PageTitle>Index</PageTitle>
 
@@ -8,54 +7,32 @@
 
 Welcome to your new app.
 
-<select name="Month" @bind="ChosenMonth">
-    @foreach (DateTime month in GetMonthRange())
-{
-    <option value="month">@month.ToString("MMM")</option>
-}
+<input @bind="ChosenMonth">
+<select>
+@foreach (DateTime month in GetMonthRange())
+        {
+        <option value="@month" >@month.ToString("MMM")</option>
+        }
 </select>
+/>
+<div>@ChosenMonth</div>
 
-<div>
-    @foreach (DateTime day in Calendar.Calculate(ChosenMonth))
-    {
-        <div>
-            @day.Day.ToString()
-        </div>
-    }
-</div>
-
-Calendar:
-
-
-
-<SurveyPrompt Title="How is Blazor working for you?" />
+<HTMLCalendar ChosenMonth="ChosenMonth"/>
 
 @code{
 
-    public CalGenerator Calendar = new CalGenerator();
-    //fields
-
-    //Props
-
     public DateTime ChosenMonth { get; set; } = DateTime.Now;
 
-
-
-    //Methods
-
-
-    private List<DateTime> GetMonthRange()
-    {
-        DateTime workingDate = DateTime.Now;
-        List<DateTime> workingList = new List<DateTime>();
-        for (int i = 0; i <= 11; i++)
+        private List<DateTime> GetMonthRange()
         {
-            DateTime targetDate = workingDate.AddMonths(i);
-            workingList.Add(targetDate);
+            DateTime workingDate = DateTime.Now;
+            List<DateTime> workingList = new List<DateTime>();
+            for (int i = 0; i <= 11; i++)
+            {
+                DateTime targetDate = workingDate.AddMonths(i);
+                workingList.Add(targetDate);
+            }
+            return workingList;
         }
-        return workingList;
     }
 
-    //Classes
-
-}

@@ -1,0 +1,31 @@
+﻿@using CommunityCalendar.Data
+
+
+<div class="container">
+    <h3 class="text-center">@ChosenMonth.ToString("MMMM yyyy")</h3>
+    @foreach (List<DateTime> week in Calendar.Calculate(ChosenMonth))
+    {
+        <div class="row">
+            @foreach (DateTime day in week)
+            {
+                <div class="col">
+                    <div class="card">
+                        <div class="card-title">@day.Day.ToString()</div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+
+    public CalGenerator Calendar = new CalGenerator();
+
+    [Parameter]
+    public DateTime ChosenMonth { get; set; }
+
+    
+
+}
+
