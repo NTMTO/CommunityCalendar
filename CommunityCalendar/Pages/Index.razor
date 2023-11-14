@@ -7,14 +7,13 @@
 
 Welcome to your new app.
 
-<input @bind="ChosenMonth">
-<select>
+<select @bind="ChosenMonth">
 @foreach (DateTime month in GetMonthRange())
         {
         <option value="@month" >@month.ToString("MMM")</option>
         }
 </select>
-/>
+
 <div>@ChosenMonth</div>
 
 <HTMLCalendar ChosenMonth="ChosenMonth"/>
