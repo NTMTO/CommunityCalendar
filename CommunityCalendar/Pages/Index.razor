@@ -7,31 +7,30 @@
 
 Welcome to your new app.
 
-<select @bind="ChosenMonth">
-@foreach (DateTime month in GetMonthRange())
+    <select @bind="ChosenMonth">
+        @foreach (DateTime month in GetMonthRange())
         {
-        <option value="@month" >@month.ToString("MMM")</option>
+            <option value="@month">@month.ToString("MMM")</option>
         }
-</select>
+    </select>
 
-<div>@ChosenMonth</div>
+    <HTMLCalendar ChosenMonth="ChosenMonth" />
 
-<HTMLCalendar ChosenMonth="ChosenMonth"/>
 
 @code{
 
     public DateTime ChosenMonth { get; set; } = DateTime.Now;
 
-        private List<DateTime> GetMonthRange()
+    private List<DateTime> GetMonthRange()
+    {
+        DateTime workingDate = DateTime.Now;
+        List<DateTime> workingList = new List<DateTime>();
+        for (int i = 0; i <= 11; i++)
         {
-            DateTime workingDate = DateTime.Now;
-            List<DateTime> workingList = new List<DateTime>();
-            for (int i = 0; i <= 11; i++)
-            {
-                DateTime targetDate = workingDate.AddMonths(i);
-                workingList.Add(targetDate);
-            }
-            return workingList;
+            DateTime targetDate = workingDate.AddMonths(i);
+            workingList.Add(targetDate);
         }
+        return workingList;
+    }
     }
 

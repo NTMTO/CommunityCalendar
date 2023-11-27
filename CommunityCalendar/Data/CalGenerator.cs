@@ -10,7 +10,7 @@ namespace CommunityCalendar.Data
             //To ensure the datetime is in the future..
             while (workingDate.Month != ChosenMonth.Month)
             {
-                workingDate.AddMonths(2);
+                workingDate = workingDate.AddMonths(1);
             }
             workingDate = new DateTime(workingDate.Year, workingDate.Month, 1);
             DateTime endDate = workingDate.AddMonths(1);
