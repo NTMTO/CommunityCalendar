@@ -55,6 +55,7 @@ public class Program
         app.MapFallbackToPage("/_Host");
 
         app.Run();
+
     }
 }
 

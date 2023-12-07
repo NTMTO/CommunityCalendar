@@ -1,5 +1,5 @@
 ﻿using System;
-namespace CommunityCalendar.Data
+namespace CommunityCalendar.Utilities
 {
     public class CalGenerator
     {
