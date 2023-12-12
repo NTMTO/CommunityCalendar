@@ -1,0 +1,34 @@
+﻿@using CommunityCalendar.Utilities;
+@using System.Collections.Generic;
+@inject ICalGenerator Calendar;
+
+
+<div class="container">
+    <h3 class="text-center">@ChosenMonth.ToString("MMMM yyyy")</h3>
+    @foreach (List<DateTime> week in Calendar.Calculate(ChosenMonth))
+    {
+        <div class="row flex-nowrap">
+            @foreach (DateTime day in week)
+            {
+                <div class="col text-truncate overflow-
+">
+                    <div class="card border-5 rounded-3 flex-nowrap">
+                        <div class="card-header">
+                        <div class="card-title bg-gradient">@day.Day.ToString()</div>
+                        </div>
+                        <div class="card-body text-secondary bg-light">
+                            Some event text.
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public DateTime ChosenMonth { get; set; }
+
+}
+

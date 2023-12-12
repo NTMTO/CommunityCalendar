@@ -1,0 +1,66 @@
+﻿@page "/usermanagement"
+@using System.Collections.Generic;
+@using CommunityCalendar.Utilities;
+@inject ISqlServices sqlServices;
+
+
+<AuthorizeView Roles="Admin">
+    <Authorized>
+        <PageTitle>User Management Console</PageTitle>
+
+        <h1>Welcome, @context.User.Identity.Name!</h1>
+
+        <div>
+            <h3>User Display</h3>
+            <InputText DisplayName="Type here to search" @bind="@value" @bind:event="oninput"/>
+            @*search bar above*@
+
+            @foreach (Dictionary<string, object> user in sqlServices.SearchAllColumns("UserDB", value))
+                {
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">First</th>
+                                <th scope="col">Last</th>
+                                <th scope="col">Date of Birth</th>
+                                <th scope="col">Date of Birth</th>
+                                <th scope="col">Date of Birth</th>
+                                <th scope="col">Date of Birth</th>
+                                <th scope="col">Date of Birth</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                            }
+
+                            @*display box columns and rows*@
+                            @*initially display first 1000 users*@
+                            @*search bar above with real-time results displayed on input*@
+                            @*each result is selectable - on select, buttons below illuminate*@
+                            @*Update, Edit, Create, Delete, and Clear Selection buttons below*@
+</div>
+
+        <div>
+            <h3>Event Display</h3>
+            @*Month View or List View*@
+            @*First display created events in one color with delete button*@
+            @*Then display registered events with unregister button*@
+            @*All events followed by manage event button*@
+            @*Legend: Created by user: red, User is registered: yellow*@    
+            @*Each event is selectable, and manage event button will change to navigate to managing that event in event Manager*@
+        </div>
+
+    </Authorized>
+    <NotAuthorized>
+        You are not authorized to access this area. Click above to login.
+    </NotAuthorized>
+</AuthorizeView>
+
+@code{
+    string value;
+
+
+    }
+
