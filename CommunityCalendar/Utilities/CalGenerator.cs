@@ -1,7 +1,7 @@
 ﻿using System;
 namespace CommunityCalendar.Utilities
 {
-    public class CalGenerator
+    public class CalGenerator : ICalGenerator
     {
 
         public List<List<DateTime>> Calculate(DateTime ChosenMonth)
@@ -49,7 +49,7 @@ namespace CommunityCalendar.Utilities
                 if (day.DayOfWeek == DayOfWeek.Saturday)
                 {
                     workingList.Add(workingWeek);
-                    workingWeek = new ();
+                    workingWeek = new();
                 }
             }
             return workingList;

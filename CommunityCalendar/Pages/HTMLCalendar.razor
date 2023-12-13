@@ -1,4 +1,6 @@
 ﻿@using CommunityCalendar.Utilities;
+@using System.Collections.Generic;
+@inject ICalGenerator Calendar;
 
 
 <div class="container">
@@ -20,12 +22,10 @@
 
 @code {
 
-    public CalGenerator Calendar = new CalGenerator();
-
     [Parameter]
     public DateTime ChosenMonth { get; set; }
 
-    
+
 
 }
 

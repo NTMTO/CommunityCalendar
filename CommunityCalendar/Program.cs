@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using CommunityCalendar.Areas.Identity;
 using CommunityCalendar.Data;
 using Microsoft.Extensions.Configuration;
+using CommunityCalendar.Utilities;
 
 namespace CommunityCalendar;
 
@@ -26,6 +27,10 @@ public class Program
         builder.Services.AddRazorPages();
         builder.Services.AddServerSideBlazor();
         builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
+        builder.Services.AddSingleton<ISqlServices, SqlServices>();
+        builder.Services.AddSingleton<IClassServices, ClassServices>();
+        builder.Services.AddSingleton<ICalGenerator, CalGenerator>();
+
         //builder.Services.AddSingleton<WeatherForecastService>();
 
         var app = builder.Build();

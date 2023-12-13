@@ -2,8 +2,11 @@
 namespace CommunityCalendar.Models;
 
 
+
 public class User
 {
+    
+    public ISqlServices _sqlServices;
 
     private static string table = "UserDB";
     public Guid UserId { get; set; }
@@ -18,8 +21,11 @@ public class User
     public List<Guid>? EventsCreated { get; set; }
     public string NotificationPreferences { get; set; }
 
-    public User(Guid UserId, string FirstName, string LastName, DateTime DateOfBirth, string Phone, string Email, string Address, string Role, string NotificationPreferences)
+    public User(Guid UserId, string FirstName, string LastName, DateTime DateOfBirth, string Phone, string Email, string Address, string Role, string NotificationPreferences, ISqlServices sqlServices)
     {
+
+        _sqlServices = sqlServices;
+
         this.UserId = UserId;
         this.FirstName = FirstName;
         this.LastName = LastName;
@@ -40,12 +46,12 @@ public class User
     {
         List<Guid>? resultList = new();
         Dictionary<string, object> args = new() { { parameter, UserId } };
-        List<Dictionary<string, object>>? result = SqlServices.Search(table, args);
+        List<Dictionary<string, object>>? result = _sqlServices.Search(table, args);
         foreach (var item in result)
         {
             resultList.Add((Guid)item["eventId"]);
         }
-        return resultList.Count > 0 ? resultList ;
+        return resultList.Count > 0 ? resultList : null;
 
     }
 

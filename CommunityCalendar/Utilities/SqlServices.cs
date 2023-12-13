@@ -4,8 +4,17 @@ using CommunityCalendar.Models;
 
 namespace CommunityCalendar.Utilities
 {
-    public class SqlServices
+    public class SqlServices : ISqlServices
     {
+
+        public IClassServices _classServices;
+        public SqlConnection _connection;
+
+        public SqlServices(IClassServices classServices)
+        {
+            _classServices = classServices;
+            _connection = BuildConnection();
+        }
 
         private SqlConnection BuildConnection()
         {
@@ -26,18 +35,7 @@ namespace CommunityCalendar.Utilities
         public List<Dictionary<string, object>>? Create(string table, object obj)
         {
 
-            Dictionary<string, object> args = new()
-            {
-                {"userId", user.UserId},
-                {"firstName", user.FirstName},
-                {"lastName", user.LastName},
-                {"address", user.Address},
-                {"role", user.Role},
-                {"notificationPreferences", user.NotificationPreferences},
-                {"dateOfBirth", user.DateOfBirth},
-                {"email", user.Email},
-                {"phone", user.Phone}
-            };
+            Dictionary<string, object> args = _classServices.PropsAsDict(obj);
             List<string> columns = new List<string>();
             List<string> parameters = new List<string>();
             foreach (KeyValuePair<string, object> k in args)
@@ -49,8 +47,9 @@ namespace CommunityCalendar.Utilities
             return BuildSubmitCommand(command, args);
         }
 
-        public List<Dictionary<string, object>>? Delete(string table, Dictionary<string, object> args)
+        public List<Dictionary<string, object>>? Delete(string table, object obj)
         {
+            Dictionary<string, object> args = _classServices.PropsAsDict(obj);
             List<string> columns = new List<string>();
             List<string> parameters = new List<string>();
             foreach (KeyValuePair<string, object> k in args)
@@ -65,8 +64,9 @@ namespace CommunityCalendar.Utilities
             return BuildSubmitCommand(command, args);
         }
 
-        public List<Dictionary<string, object>>? Update(string table, Dictionary<string, object> args)
+        public List<Dictionary<string, object>>? Update(string table, object obj)
         {
+            Dictionary<string, object> args = _classServices.PropsAsDict(obj);
             List<string> parameters = new List<string>();
             string identifier = "";
             foreach (KeyValuePair<string, object> k in args)
@@ -84,36 +84,25 @@ namespace CommunityCalendar.Utilities
             return BuildSubmitCommand(command, args);
         }
 
-        
+
         public List<Dictionary<string, object>>? Search(string table, Dictionary<string, object> args)
         {
             List<string> parameters = new List<string>();
             foreach (KeyValuePair<string, object> k in args)
             {
-                parameters.Add($"{k.Key} LIKE @{k.Key}"); //when I put single quote around the value here, I get no results, but if I take them away I get a syntax error. I also know that the columns and values specified exist in the table. Does space before/after = fix all?
+                parameters.Add($"{k.Key} LIKE @{k.Key}");
             }
             string command = string.Format("SELECT * FROM {0} WHERE {1}", table, string.Join(" OR ", parameters));
             return BuildSubmitCommand(command, args);
         }
 
-        public List<Dictionary<string, object>>? SearchAllColumns(string table, object arg)
+        public List<Dictionary<string, object>>? SearchAllColumns(string table, string arg)
         {
             Dictionary<string, object> args = new();
             Dictionary<string, string> columns = GetColumns(table);
             foreach (KeyValuePair<string, string> column in columns)
             {
-                if (column.Value.ToString().Contains("uniqueidentifier"))
-                {
-                    try { arg = Guid.Parse(arg.ToString()); }
-                    catch { continue; }
-                }
-                if (column.Value.ToString().Contains("datetime"))
-                {
-                    try { arg = DateTime.Parse(arg.ToString()); }
-                    catch { continue; }
-                }
                 args.Add(column.Key.ToString(), arg);
-                arg = (string)arg.ToString();
             }
             return Search(table, args);
         }
@@ -121,19 +110,20 @@ namespace CommunityCalendar.Utilities
         public Dictionary<string, string> GetColumns(string table)
         {
             string command = $"SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{table}'";
-            SqlConnection connection = BuildConnection();
             command += ";";
             Dictionary<string, string> data = new();
             //List<string> data = new();
 
-            using (SqlCommand cmd = new SqlCommand(command, connection))
+            using (SqlCommand cmd = new SqlCommand(command, _connection))
             {
                 using (SqlDataReader reader = cmd.ExecuteReader())
                 {
                     //Collect the results
                     while (reader.Read())
                     {
-                        data.Add(reader["COLUMN_NAME"].ToString(), reader["DATA_TYPE"].ToString());
+                        string key = reader["COLUMN_NAME"].ToString();
+                        string value = reader["DATA_TYPE"].ToString();
+                        data.Add(key, value);
                     }
                 }
                 return data;
@@ -143,10 +133,9 @@ namespace CommunityCalendar.Utilities
 
         public List<Dictionary<string, object>>? BuildSubmitCommand(string command, Dictionary<string, object> args)
         {
-            SqlConnection connection = BuildConnection();
             List<Dictionary<string, object>> data = new();
             //string dummyCommand = "SELECT * FROM UserDB WHERE firstName LIKE '@firstName%';";
-            using (SqlCommand cmd = new SqlCommand(command, connection))
+            using (SqlCommand cmd = new SqlCommand(command, _connection))
             {
                 //cmd.Parameters.AddWithValue("@firstName", "adam");
                 foreach (KeyValuePair<string, object> k in args)
